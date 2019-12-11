@@ -223,19 +223,22 @@ class RepositoryTest extends Tests\TestCase
 
     public function testForkRepositorySuccess()
     {
-        $endpoint       = 'repositories/gentle/eof/fork';
+        $endpoint       = 'repositories/gentle/eof/forks';
         $params         = array(
-            'name'          => 'my-eof',
             'is_private'    => true,
+            'name'          => 'my-eof',
         );
 
-        $repository = $this->getApiMock('Bitbucket\API\Repositories\Repository');
-        $repository->expects($this->once())
-            ->method('requestPost')
-            ->with($endpoint, $params);
+        $client = $this->getHttpClientMock();
+        $client->expects($this->once())
+            ->method('post')
+            ->with($endpoint, json_encode($params));
+
+        /** @var \Bitbucket\API\Repositories\Repository $repo */
+        $repo = $this->getClassMock('Bitbucket\API\Repositories\Repository', $client);
 
         /** @var $repository \Bitbucket\API\Repositories\Repository */
-        $repository->fork('gentle', 'eof', 'my-eof', array('is_private' => true));
+        $repo->fork('gentle', 'eof', 'my-eof', array('is_private' => true));
     }
 
     public function testGetBranches()
@@ -291,17 +294,18 @@ class RepositoryTest extends Tests\TestCase
 
     public function testGetTags()
     {
-        $endpoint       = 'repositories/gentle/eof/tags';
+        $endpoint       = 'repositories/gentle/eof/refs/tags/tagname';
         $expectedResult = json_encode('dummy');
 
-        $repository = $this->getApiMock('Bitbucket\API\Repositories\Repository');
-        $repository->expects($this->once())
-            ->method('requestGet')
+        $client = $this->getHttpClientMock();
+        $client->expects($this->once())
+            ->method('get')
             ->with($endpoint)
             ->will($this->returnValue($expectedResult));
 
-        /** @var $repository \Bitbucket\API\Repositories\Repository */
-        $actual = $repository->tags('gentle', 'eof');
+        /** @var \Bitbucket\API\Repositories\Repository $repo */
+        $repo   = $this->getClassMock('Bitbucket\API\Repositories\Repository', $client);
+        $actual = $repo->tags('gentle', 'eof', 'tagname');
 
         $this->assertEquals($expectedResult, $actual);
     }

@@ -3,11 +3,20 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [Unreleased]
+
+### Added:
+  - Create a file through API via `Src:create` (PR #40)
+
+### Changed:
+  - Updated `Api:api` in order to support class name resolution via `::class` (PR #38)
+  - Updated `BranchRestrictions` with newly available restriction types (PR #39)
+
+
 ## 1.1.2 / 2018-06-18
 
 ### Fixed:
   - Request content was not set when a json was provided (issue #74)
-
 
 
 ## 1.1.1 / 2018-06-11

@@ -196,9 +196,12 @@ class Repository extends API\Api
     {
         $params['name'] = $name;
 
-        return $this->requestPost(
-            sprintf('repositories/%s/%s/fork', $account, $repo),
-            $params
+        $params = json_encode($params);
+
+        return $this->getClient()->setApiVersion('2.0')->post(
+            sprintf('repositories/%s/%s/forks', $account, $repo),
+            $params,
+            array('Content-Type' => 'application/json')
         );
     }
 
@@ -249,17 +252,18 @@ class Repository extends API\Api
     }
 
     /**
-     * Get a list of tags
+     * Get a pagination list of tags or tag object by name
      *
      * @access public
      * @param  string           $account The team or individual account owning the repository.
      * @param  string           $repo    The repository identifier.
+     * @param  string           $name    The name of the tag
      * @return MessageInterface
      */
-    public function tags($account, $repo)
+    public function tags($account, $repo, $name = '')
     {
-        return $this->requestGet(
-            sprintf('repositories/%s/%s/tags', $account, $repo)
+        return $this->getClient()->setApiVersion('2.0')->get(
+            sprintf('repositories/%s/%s/refs/tags/%s', $account, $repo, $name)
         );
     }
 

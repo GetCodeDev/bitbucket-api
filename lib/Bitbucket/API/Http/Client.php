@@ -81,6 +81,8 @@ class Client extends ClientListener implements ClientInterface
             $params     = array();
         }
 
+        $endpoint = str_replace('~=', '~', urldecode($endpoint));
+
         return $this->request($endpoint, $params, 'GET', $headers);
     }
 
